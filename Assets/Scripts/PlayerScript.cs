@@ -10,16 +10,48 @@ public class PlayerScript : MonoBehaviour
     public float speed;
 
     public Text score;
+    public Text winText;
+    public Text lives;
+    public Text loseText;
 
     private int scoreValue = 0;
+    private int livesNumber = 3;
+
+    public AudioClip musicClipOne;
+
+    public AudioClip musicClipTwo;
+
+    public AudioSource musicSource;
+    private bool facingRight = true;
+    Animator anim;
 
     // Start is called before the first frame update
     void Start()
     {
         rd2d = GetComponent<Rigidbody2D>();
         score.text = scoreValue.ToString();
-
+        scoreValue = 0;
+        winText.text = "";
+        loseText.text = "";
+        lives.text = livesNumber.ToString();
+        anim = GetComponent<Animator>();
     }
+     void update ()
+     {
+          if (Input.GetKeyDown(KeyCode.W))
+        {
+          musicSource.clip = musicClipOne;
+          musicSource.Play();
+        }
+        
+     }
+void Flip()
+   {
+     facingRight = !facingRight;
+     Vector2 Scaler = transform.localScale;
+     Scaler.x = Scaler.x * -1;
+     transform.localScale = Scaler;
+   }
 
     // Update is called once per frame
     void FixedUpdate()
@@ -32,6 +64,35 @@ public class PlayerScript : MonoBehaviour
             {
                 Application.Quit();
             }
+
+        if (facingRight == false && hozMovement > 0)
+            {
+                 Flip();
+            }
+        else if (facingRight == true && hozMovement < 0)
+            {
+                 Flip();
+            }
+            if (Input.GetKeyDown(KeyCode.A))
+        {
+            anim.SetInteger("State", 1);
+        }
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            anim.SetInteger("State", 1);
+        }
+        if (Input.GetKeyUp(KeyCode.A))
+        {
+            anim.SetInteger("State", 0);
+        }
+        if (Input.GetKeyUp(KeyCode.D))
+        {
+            anim.SetInteger("State", 0);
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            anim.SetInteger("State", 0);
+        }
     }
 
 
@@ -43,8 +104,24 @@ public class PlayerScript : MonoBehaviour
             score.text = scoreValue.ToString();
             Destroy(collision.collider.gameObject);
         }
-
+          if (scoreValue == 8)
+        {
+            winText.text = "You did it! Game by Natalie Dilbeck";
+            musicSource.clip = musicClipTwo;
+            musicSource.Play();
+        }
+        if (collision.collider.tag == "Enemy")
+        {
+            livesNumber -= 1;
+            lives.text = livesNumber.ToString();
+            Destroy(collision.collider.gameObject);
+        }
+        if (livesNumber == 0)
+        {
+            loseText.text = "You lost! Game by Natalie Dilbeck";
+        }
     }
+
 
     private void OnCollisionStay2D(Collision2D collision)
     {
