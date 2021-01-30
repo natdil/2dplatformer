@@ -23,7 +23,7 @@ public class PlayerScript : MonoBehaviour
 
     public AudioSource musicSource;
     private bool facingRight = true;
-    Animator anim;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -34,7 +34,7 @@ public class PlayerScript : MonoBehaviour
         winText.text = "";
         loseText.text = "";
         lives.text = livesNumber.ToString();
-        anim = GetComponent<Animator>();
+        
     }
      void update ()
      {
@@ -58,7 +58,8 @@ void Flip()
     {
         float hozMovement = Input.GetAxis("Horizontal");
         float vertMovement = Input.GetAxis("Vertical");
-        rd2d.AddForce(new Vector2(hozMovement * speed, vertMovement * speed));
+        Vector2 movement = new Vector2 (hozMovement, vertMovement);
+        rd2d.AddForce (movement * speed);
          
         if (Input.GetKey("escape"))
             {
@@ -73,26 +74,8 @@ void Flip()
             {
                  Flip();
             }
-            if (Input.GetKeyDown(KeyCode.A))
-        {
-            anim.SetInteger("State", 1);
-        }
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            anim.SetInteger("State", 1);
-        }
-        if (Input.GetKeyUp(KeyCode.A))
-        {
-            anim.SetInteger("State", 0);
-        }
-        if (Input.GetKeyUp(KeyCode.D))
-        {
-            anim.SetInteger("State", 0);
-        }
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            anim.SetInteger("State", 0);
-        }
+           
+    
     }
 
 
@@ -104,7 +87,7 @@ void Flip()
             score.text = scoreValue.ToString();
             Destroy(collision.collider.gameObject);
         }
-          if (scoreValue == 8)
+          if (scoreValue == 1)
         {
             winText.text = "You did it! Game by Natalie Dilbeck";
             musicSource.clip = musicClipTwo;
